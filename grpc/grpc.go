@@ -57,14 +57,17 @@ func initOptions() []grpc.ServerOption {
 	return options
 }
 
-func (g *GRpc) Run() error {
+func (g *GRpc) Init() error {
 	options := initOptions()
+	g.Server = grpc.NewServer(options...)
+	return nil
+}
 
+func (g *GRpc) Run() error {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Config.ServerPort))
 	if err != nil {
 		return err
 	}
-	g.Server = grpc.NewServer(options...)
 
 	logrus.Infof("grpc server listen on %d", g.Config.ServerPort)
 	if err := g.Server.Serve(lis); err != nil {
