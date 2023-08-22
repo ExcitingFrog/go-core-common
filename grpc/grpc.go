@@ -20,9 +20,10 @@ import (
 type GRpc struct {
 	provider.IProvider
 
-	addr   string
-	Server *grpc.Server
-	Config *Config
+	addr    string
+	Server  *grpc.Server
+	Config  *Config
+	Running bool
 }
 
 func NewGRpc(config *Config) *GRpc {
@@ -79,6 +80,7 @@ func (g *GRpc) Run() error {
 		return err
 	}
 	logrus.Info("grpc start success")
+	g.Running = true
 
 	return nil
 }
