@@ -6,6 +6,7 @@ import (
 	"net/http/pprof"
 
 	"github.com/ExcitingFrog/go-core-common/provider"
+	"github.com/sirupsen/logrus"
 )
 
 type PProf struct {
@@ -37,9 +38,11 @@ func (p *PProf) Run() error {
 	p.addr = fmt.Sprintf(":%d", p.Config.port)
 	p.server = &http.Server{Addr: p.addr, Handler: mux}
 
+	logrus.Info("pprof server listen on ", p.addr)
 	if err := p.server.ListenAndServe(); err != http.ErrServerClosed {
 		return err
 	}
+	logrus.Info("pprof start success")
 
 	return nil
 }

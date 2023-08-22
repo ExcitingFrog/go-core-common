@@ -66,9 +66,12 @@ func (g *GRpc) Run() error {
 	}
 	g.Server = grpc.NewServer(options...)
 
+	logrus.Infof("grpc server listen on %d", g.Config.ServerPort)
 	if err := g.Server.Serve(lis); err != nil {
 		return err
 	}
+	logrus.Info("grpc start success")
+
 	return nil
 }
 
