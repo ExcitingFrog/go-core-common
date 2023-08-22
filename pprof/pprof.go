@@ -42,7 +42,6 @@ func (p *PProf) Run() error {
 	if err := p.server.ListenAndServe(); err != http.ErrServerClosed {
 		return err
 	}
-	logrus.Info("pprof start success")
 
 	return nil
 }

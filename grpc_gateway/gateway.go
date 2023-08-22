@@ -55,7 +55,6 @@ func (g *Gataway) Run() error {
 	if err := g.server.ListenAndServe(); err != http.ErrServerClosed {
 		return err
 	}
-	logrus.Info("gateway start success")
 
 	return nil
 }

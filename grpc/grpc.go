@@ -76,11 +76,10 @@ func (g *GRpc) Run() error {
 	reflection.Register(g.Server)
 
 	logrus.Info("grpc server listen on ", g.addr)
+	g.Running = true
 	if err := g.Server.Serve(lis); err != nil {
 		return err
 	}
-	logrus.Info("grpc start success")
-	g.Running = true
 
 	return nil
 }
