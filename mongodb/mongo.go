@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ExcitingFrog/go-core-common/provider"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -31,6 +32,7 @@ func (p *MongoDB) Run() error {
 		SetMaxPoolSize(p.Config.MaxPoolSize).
 		SetMaxConnIdleTime(p.Config.MaxIdle)
 
+	logrus.Info("mongodb is connecting")
 	client, err := mongo.Connect(context.Background(), opts)
 	if err != nil {
 		return err
@@ -40,6 +42,7 @@ func (p *MongoDB) Run() error {
 	if err != nil {
 		return err
 	}
+	logrus.Info("mongodb connect success")
 
 	p.Client = client
 
