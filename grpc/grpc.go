@@ -20,6 +20,7 @@ import (
 type GRpc struct {
 	provider.IProvider
 
+	addr   string
 	Server *grpc.Server
 	Config *Config
 }
@@ -65,14 +66,15 @@ func (g *GRpc) Init() error {
 }
 
 func (g *GRpc) Run() error {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Config.ServerPort))
+	g.addr = fmt.Sprintf(":%d", g.Config.ServerPort)
+	lis, err := net.Listen("tcp", g.addr)
 	if err != nil {
 		return err
 	}
 
 	reflection.Register(g.Server)
 
-	logrus.Infof("grpc server listen on %d", g.Config.ServerPort)
+	logrus.Infof("grpc server listen on %d", g.addr)
 	if err := g.Server.Serve(lis); err != nil {
 		return err
 	}
