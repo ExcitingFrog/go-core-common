@@ -38,7 +38,7 @@ func (s *Providers) AddProvider(provider IProvider) {
 
 func (s *Providers) Run() {
 	for _, provider := range s.providers {
-		provider.Run()
+		go provider.Run()
 	}
 	s.handleInterrupt()
 }
