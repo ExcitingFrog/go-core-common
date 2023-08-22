@@ -13,6 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 )
 
@@ -68,6 +69,8 @@ func (g *GRpc) Run() error {
 	if err != nil {
 		return err
 	}
+
+	reflection.Register(g.Server)
 
 	logrus.Infof("grpc server listen on %d", g.Config.ServerPort)
 	if err := g.Server.Serve(lis); err != nil {
