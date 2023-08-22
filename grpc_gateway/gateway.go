@@ -52,3 +52,7 @@ func (g *Gataway) Run() error {
 
 	return nil
 }
+
+func (g *Gataway) Options() []grpc.DialOption {
+	return g.options
+}
