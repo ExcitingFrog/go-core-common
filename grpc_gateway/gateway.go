@@ -3,6 +3,7 @@ package grpc_gateway
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/ExcitingFrog/go-core-common/provider"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -36,6 +37,8 @@ func (g *Gataway) Init() error {
 func (g *Gataway) Run() error {
 	g.addr = fmt.Sprintf(":%d", g.Config.GatawayPort)
 	g.server = &http.Server{Addr: g.addr, Handler: g.Mux}
+
+	time.Sleep(3 * time.Second)
 
 	logrus.Info("gateway server listen on ", g.addr)
 	if err := g.server.ListenAndServe(); err != http.ErrServerClosed {
