@@ -17,9 +17,9 @@ type Config struct {
 func NewConfig() *Config {
 	v := viper.New()
 
-	v.AutomaticEnv()
-
 	v.SetDefault(JaegerURI, "http://localhost:14268/api/traces")
+
+	v.AutomaticEnv()
 
 	config := &Config{
 		ServiceName: v.GetString(ServiceName),
