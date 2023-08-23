@@ -11,7 +11,9 @@ import (
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 
+	"github.com/ExcitingFrog/go-core-common/log"
 	"github.com/ExcitingFrog/go-core-common/provider"
 )
 
@@ -74,4 +76,14 @@ func StartSpanFromContext(ctx context.Context, operationName string) (context.Co
 		}
 	}
 	return globalTracer.Start(ctx, operationName)
+}
+
+func StartSpanAndLogFromContext(ctx context.Context, operationName string) (context.Context, trace.Span, *zap.Logger) {
+	if value := ctx.Value(JaegerTrace); value != nil {
+		if span, ok := value.(trace.Span); ok {
+			return ctx, span, log.Logger()
+		}
+	}
+	ctx, span := globalTracer.Start(ctx, operationName)
+	return ctx, span, log.Logger()
 }
