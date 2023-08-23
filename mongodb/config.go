@@ -23,12 +23,12 @@ type Config struct {
 func NewConfig() *Config {
 	v := viper.New()
 
-	v.AutomaticEnv()
-
 	v.SetDefault(URI, "")
 	v.SetDefault(MaxPoolSizeKey, 32)
 	v.SetDefault(MaxIdleKey, 15)
 	v.SetDefault(TimeoutKey, 10)
+
+	v.AutomaticEnv()
 
 	config := &Config{
 		URI:         v.GetString(URI),

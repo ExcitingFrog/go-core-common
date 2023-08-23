@@ -20,7 +20,7 @@ func NewConfig() *Config {
 	v.SetDefault(PortKey, 8083)
 	v.SetDefault(EndpointKey, "/debug/pprof")
 
-	viper.AutomaticEnv()
+	v.AutomaticEnv()
 
 	config := &Config{
 		port:     v.GetInt(PortKey),
