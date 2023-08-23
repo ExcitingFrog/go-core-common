@@ -15,8 +15,9 @@ type Config struct {
 func NewConfig() *Config {
 	v := viper.New()
 
-	v.AutomaticEnv()
 	v.SetDefault(GatawayPort, 6061)
+
+	v.AutomaticEnv()
 
 	config := &Config{
 		GatawayPort: v.GetInt(GatawayPort),
