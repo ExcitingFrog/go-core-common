@@ -17,7 +17,6 @@ type Config struct {
 func NewConfig() *Config {
 	v := viper.New()
 
-	v.SetDefault(PortKey, 8083)
 	v.SetDefault(EndpointKey, "/debug/pprof")
 
 	viper.AutomaticEnv()
