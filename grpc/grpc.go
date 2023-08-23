@@ -11,6 +11,7 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_tags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
@@ -44,10 +45,12 @@ func recoverHandler(_ context.Context, p interface{}) error {
 func initOptions() []grpc.ServerOption {
 	options := []grpc.ServerOption{}
 	unary := []grpc.UnaryServerInterceptor{
+		otelgrpc.UnaryServerInterceptor(),
 		grpc_tags.UnaryServerInterceptor(),
 		grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandlerContext(recoverHandler)),
 	}
 	stream := []grpc.StreamServerInterceptor{
+		otelgrpc.StreamServerInterceptor(),
 		grpc_tags.StreamServerInterceptor(),
 		grpc_recovery.StreamServerInterceptor(grpc_recovery.WithRecoveryHandlerContext(recoverHandler)),
 	}
