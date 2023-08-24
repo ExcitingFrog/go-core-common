@@ -2,28 +2,26 @@ package log
 
 import (
 	"github.com/spf13/viper"
+	"go.uber.org/zap/zapcore"
 )
 
 const (
-	ServiceName string = "SERVICE_NAME"
-	JaegerURI   string = "JAEGER_URI"
+	LogLevel = "LOG_LEVEL"
 )
 
 type Config struct {
-	ServiceName string
-	JaegerURI   string
+	LogLevel zapcore.Level
 }
 
 func NewConfig() *Config {
 	v := viper.New()
 
-	v.SetDefault(JaegerURI, "http://localhost:14268/api/traces")
+	v.SetDefault(LogLevel, zapcore.DebugLevel)
 
 	v.AutomaticEnv()
 
 	config := &Config{
-		ServiceName: v.GetString(ServiceName),
-		JaegerURI:   v.GetString(JaegerURI),
+		LogLevel: zapcore.Level(v.GetInt(LogLevel)),
 	}
 
 	return config

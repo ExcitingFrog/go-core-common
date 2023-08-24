@@ -28,7 +28,7 @@ func NewLog(config *Config) *Log {
 func (l *Log) Run() error {
 	cfg := zap.Config{
 		Encoding:         "json",
-		Level:            zap.NewAtomicLevelAt(zap.DebugLevel),
+		Level:            zap.NewAtomicLevelAt(l.Config.LogLevel),
 		OutputPaths:      []string{"error.log", "stdout"},
 		ErrorOutputPaths: []string{"error.log"},
 		EncoderConfig: zapcore.EncoderConfig{
