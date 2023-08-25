@@ -25,7 +25,7 @@ func NewLog(config *Config) *Log {
 	}
 }
 
-func (l *Log) Run() error {
+func (l *Log) Init() error {
 	cfg := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(l.Config.LogLevel),
@@ -46,9 +46,13 @@ func (l *Log) Run() error {
 		return err
 	}
 
-	l.Logger = logger
 	globalLogger = logger
 
+	return nil
+}
+
+func (l *Log) Run() error {
+	l.Logger = globalLogger
 	return nil
 }
 

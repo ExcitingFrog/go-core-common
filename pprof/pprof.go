@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"net/http/pprof"
 
+	"github.com/ExcitingFrog/go-core-common/log"
 	"github.com/ExcitingFrog/go-core-common/provider"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type PProf struct {
@@ -27,6 +28,10 @@ func NewPprof(config *Config) *PProf {
 	}
 }
 
+func (p *PProf) Init() error {
+	return nil
+}
+
 func (p *PProf) Run() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc(p.Config.endpoint+"/", pprof.Index)
@@ -38,7 +43,9 @@ func (p *PProf) Run() error {
 	p.addr = fmt.Sprintf(":%d", p.Config.port)
 	p.server = &http.Server{Addr: p.addr, Handler: mux}
 
-	logrus.Info("pprof server listen on ", p.addr)
+	log.Logger().With(
+		zap.String("addr", p.addr),
+	).Info("pprof server start")
 	if err := p.server.ListenAndServe(); err != http.ErrServerClosed {
 		return err
 	}

@@ -3,8 +3,8 @@ package mongodb
 import (
 	"context"
 
+	"github.com/ExcitingFrog/go-core-common/log"
 	"github.com/ExcitingFrog/go-core-common/provider"
-	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -25,6 +25,10 @@ func NewMongoDB(config *Config) *MongoDB {
 	}
 }
 
+func (p *MongoDB) Init() error {
+	return nil
+}
+
 func (p *MongoDB) Run() error {
 	opts := options.Client().
 		ApplyURI(p.Config.URI).
@@ -32,7 +36,7 @@ func (p *MongoDB) Run() error {
 		SetMaxPoolSize(p.Config.MaxPoolSize).
 		SetMaxConnIdleTime(p.Config.MaxIdle)
 
-	logrus.Info("mongodb is connecting")
+	log.Logger().Info("mongodb is connecting")
 	client, err := mongo.Connect(context.Background(), opts)
 	if err != nil {
 		return err
@@ -42,7 +46,7 @@ func (p *MongoDB) Run() error {
 	if err != nil {
 		return err
 	}
-	logrus.Info("mongodb connect success")
+	log.Logger().Info("mongodb connect success")
 
 	p.Client = client
 

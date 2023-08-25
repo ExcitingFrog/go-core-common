@@ -40,6 +40,10 @@ func NewJaeger(config *Config) *Jaeger {
 	}
 }
 
+func (j *Jaeger) Init() error {
+	return nil
+}
+
 func (j *Jaeger) Run() error {
 	j.Tracer = otel.Tracer(j.Config.ServiceName)
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(j.Config.JaegerURI)))
@@ -86,4 +90,8 @@ func StartSpanAndLogFromContext(ctx context.Context, operationName string) (cont
 	}
 	ctx, span := globalTracer.Start(ctx, operationName)
 	return ctx, span, log.Logger()
+}
+
+func GetGlobalJaeger() trace.Tracer {
+	return globalTracer
 }
