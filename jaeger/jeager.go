@@ -91,3 +91,7 @@ func StartSpanAndLogFromContext(ctx context.Context, operationName string) (cont
 	ctx, span := globalTracer.Start(ctx, operationName)
 	return ctx, span, log.Logger()
 }
+
+func GetGlobalJaeger() trace.Tracer {
+	return globalTracer
+}

@@ -38,8 +38,9 @@ func NewGataway(config *Config, grpc *grpcProvider.GRpc) *Gataway {
 	}
 }
 
-func (g *Gataway) Init() error {
+func (g *Gataway) Init(options []grpc.DialOption) error {
 	g.Mux = runtime.NewServeMux()
+	g.options = options
 	g.options = append(g.options, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	return nil
 }
