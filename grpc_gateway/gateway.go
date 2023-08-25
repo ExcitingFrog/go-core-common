@@ -27,20 +27,20 @@ type Gataway struct {
 	grpc    *grpcProvider.GRpc
 }
 
-func NewGataway(config *Config, grpc *grpcProvider.GRpc) *Gataway {
+func NewGataway(config *Config, grpc *grpcProvider.GRpc, options ...grpc.DialOption) *Gataway {
 	if config == nil {
 		config = NewConfig()
 	}
 
 	return &Gataway{
-		Config: config,
-		grpc:   grpc,
+		Config:  config,
+		grpc:    grpc,
+		options: options,
 	}
 }
 
-func (g *Gataway) Init(options ...grpc.DialOption) error {
+func (g *Gataway) Init() error {
 	g.Mux = runtime.NewServeMux()
-	g.options = append(g.options, options...)
 	g.options = append(g.options, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	return nil
 }
