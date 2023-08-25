@@ -8,6 +8,7 @@ import (
 type IProvider interface {
 	Run() error
 	Close() error
+	Init() error
 }
 
 type Providers struct {
@@ -33,6 +34,9 @@ func NewProviders() *Providers {
 }
 
 func (s *Providers) AddProvider(provider IProvider) {
+	if err := provider.Init(); err != nil {
+		panic(err)
+	}
 	s.providers = append(s.providers, provider)
 }
 
