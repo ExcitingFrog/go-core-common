@@ -27,7 +27,7 @@ type Jaeger struct {
 	provider.IProvider
 
 	Config *Config
-	trace  trace.Tracer
+	Tracer trace.Tracer
 	tp     *tracesdk.TracerProvider
 }
 
@@ -45,7 +45,7 @@ func (j *Jaeger) Init() error {
 }
 
 func (j *Jaeger) Run() error {
-	j.trace = otel.Tracer(j.Config.ServiceName)
+	j.Tracer = otel.Tracer(j.Config.ServiceName)
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(j.Config.JaegerURI)))
 	if err != nil {
 		return err
@@ -57,7 +57,7 @@ func (j *Jaeger) Run() error {
 		)),
 	)
 	otel.SetTracerProvider(j.tp)
-	globalTracer = j.trace
+	globalTracer = j.Tracer
 	// otel.SetTextMapPropagator(propagation.TraceContext{})
 	b3Propagator := b3.New(b3.WithInjectEncoding(b3.B3MultipleHeader))
 	propagator := propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}, b3Propagator)
@@ -70,11 +70,7 @@ func (j *Jaeger) Close() error {
 }
 
 func (j *Jaeger) Start(ctx context.Context, name string) (context.Context, trace.Span) {
-	return j.trace.Start(ctx, name)
-}
-
-func (j *Jaeger) Tracer(name string, options ...trace.TracerOption) trace.Tracer {
-	return j.trace
+	return j.Tracer.Start(ctx, name)
 }
 
 func StartSpanFromContext(ctx context.Context, operationName string) (context.Context, trace.Span) {
