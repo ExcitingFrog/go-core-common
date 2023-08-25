@@ -35,8 +35,10 @@ func NewProviders() *Providers {
 
 func (s *Providers) AddProvider(provider IProvider) {
 	if initializer, ok := provider.(interface{ Init() error }); ok {
-		if err := initializer.Init(); err != nil {
-			panic(err)
+		if initializer != nil {
+			if err := initializer.Init(); err != nil {
+				panic(err)
+			}
 		}
 	}
 
