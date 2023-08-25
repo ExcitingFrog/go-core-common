@@ -7,9 +7,11 @@ import (
 	"time"
 
 	grpcProvider "github.com/ExcitingFrog/go-core-common/grpc"
+	"github.com/ExcitingFrog/go-core-common/log"
 	"github.com/ExcitingFrog/go-core-common/provider"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -51,7 +53,11 @@ func (g *Gataway) Run() error {
 	if !g.grpc.Running {
 		return errors.New("grpc server not running")
 	}
-	logrus.Info("gateway server listen on ", g.addr)
+
+	log.Logger().With(
+		zap.String("addr", g.addr),
+	).Info("gateway server start")
+
 	if err := g.server.ListenAndServe(); err != http.ErrServerClosed {
 		return err
 	}

@@ -6,12 +6,13 @@ import (
 	"net"
 	"runtime/debug"
 
+	"github.com/ExcitingFrog/go-core-common/log"
 	"github.com/ExcitingFrog/go-core-common/provider"
 	middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_tags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
@@ -38,7 +39,10 @@ func NewGRpc(config *Config) *GRpc {
 
 func recoverHandler(_ context.Context, p interface{}) error {
 	err := status.Errorf(codes.Internal, "%v", p)
-	logrus.WithError(err).Errorf("[gRPC] Service panic, stack: \n%s", debug.Stack())
+	log.Logger().With(
+		zap.String("stack", string(debug.Stack())),
+		zap.String("error", err.Error()),
+	).Error("grpc service panic")
 	return err
 }
 
@@ -78,7 +82,10 @@ func (g *GRpc) Run() error {
 
 	reflection.Register(g.Server)
 
-	logrus.Info("grpc server listen on ", g.addr)
+	log.Logger().With(
+		zap.String("port", g.addr),
+	).Info("grpc server start")
+
 	g.Running = true
 	if err := g.Server.Serve(lis); err != nil {
 		return err
