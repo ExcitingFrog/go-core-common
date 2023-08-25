@@ -40,6 +40,10 @@ func NewJaeger(config *Config) *Jaeger {
 	}
 }
 
+func (j *Jaeger) Init() error {
+	return nil
+}
+
 func (j *Jaeger) Run() error {
 	j.Tracer = otel.Tracer(j.Config.ServiceName)
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(j.Config.JaegerURI)))

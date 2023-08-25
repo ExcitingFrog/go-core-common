@@ -28,6 +28,10 @@ func NewPprof(config *Config) *PProf {
 	}
 }
 
+func (p *PProf) Init() error {
+	return nil
+}
+
 func (p *PProf) Run() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc(p.Config.endpoint+"/", pprof.Index)

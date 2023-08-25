@@ -25,6 +25,10 @@ func NewMongoDB(config *Config) *MongoDB {
 	}
 }
 
+func (p *MongoDB) Init() error {
+	return nil
+}
+
 func (p *MongoDB) Run() error {
 	opts := options.Client().
 		ApplyURI(p.Config.URI).
