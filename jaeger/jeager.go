@@ -74,6 +74,9 @@ func (j *Jaeger) Start(ctx context.Context, name string) (context.Context, trace
 }
 
 func StartSpanFromContext(ctx context.Context, operationName string) (context.Context, trace.Span) {
+	if span := trace.SpanFromContext(ctx); span.SpanContext().IsValid() {
+		return ctx, span
+	}
 	if value := ctx.Value(JaegerTrace); value != nil {
 		if span, ok := value.(trace.Span); ok {
 			return ctx, span
