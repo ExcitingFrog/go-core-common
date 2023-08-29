@@ -29,13 +29,16 @@ func (t *UTrace) Init() error {
 	return nil
 }
 
+func (t *UTrace) Close() error {
+	return uptrace.Shutdown(context.Background())
+}
+
 func (t *UTrace) Run() error {
 	uptrace.ConfigureOpentelemetry(
 		uptrace.WithDSN(t.Config.UptraceDSN),
 		uptrace.WithServiceName(t.Config.ServiceName),
 		uptrace.WithServiceVersion("1.0.0"),
 	)
-	defer uptrace.Shutdown(context.Background())
 
 	globalTracer = otel.Tracer(t.Config.ServiceName)
 
