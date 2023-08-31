@@ -3,10 +3,12 @@ package utrace
 import (
 	"context"
 
+	"github.com/ExcitingFrog/go-core-common/log"
 	"github.com/ExcitingFrog/go-core-common/provider"
 	"github.com/uptrace/uptrace-go/uptrace"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 var globalTracer trace.Tracer
@@ -45,10 +47,15 @@ func (t *UTrace) Run() error {
 	return nil
 }
 
-func StartTrace(ctx context.Context, operationName string) (context.Context, trace.Span) {
+func StartSpanFromContext(ctx context.Context, operationName string) (context.Context, trace.Span) {
 	return globalTracer.Start(ctx, operationName)
 }
 
-func ReturnGlobalTracer() trace.Tracer {
+func StartSpanAndLogFromContext(ctx context.Context, operationName string) (context.Context, trace.Span, *zap.Logger) {
+	ctx, span := globalTracer.Start(ctx, operationName)
+	return ctx, span, log.Logger()
+}
+
+func GetGlobalTracer() trace.Tracer {
 	return globalTracer
 }

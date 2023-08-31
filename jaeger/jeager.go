@@ -27,7 +27,6 @@ type Jaeger struct {
 	provider.IProvider
 
 	Config *Config
-	Tracer trace.Tracer
 	tp     *tracesdk.TracerProvider
 }
 
@@ -45,7 +44,7 @@ func (j *Jaeger) Init() error {
 }
 
 func (j *Jaeger) Run() error {
-	j.Tracer = otel.Tracer(j.Config.ServiceName)
+	tracer := otel.Tracer(j.Config.ServiceName)
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(j.Config.JaegerURI)))
 	if err != nil {
 		return err
@@ -57,8 +56,7 @@ func (j *Jaeger) Run() error {
 		)),
 	)
 	otel.SetTracerProvider(j.tp)
-	globalTracer = j.Tracer
-	// otel.SetTextMapPropagator(propagation.TraceContext{})
+	globalTracer = tracer
 	b3Propagator := b3.New(b3.WithInjectEncoding(b3.B3MultipleHeader))
 	propagator := propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}, b3Propagator)
 	otel.SetTextMapPropagator(propagator)
@@ -69,25 +67,11 @@ func (j *Jaeger) Close() error {
 	return j.tp.Shutdown(context.Background())
 }
 
-func (j *Jaeger) Start(ctx context.Context, name string) (context.Context, trace.Span) {
-	return j.Tracer.Start(ctx, name)
-}
-
 func StartSpanFromContext(ctx context.Context, operationName string) (context.Context, trace.Span) {
-	if value := ctx.Value(JaegerTrace); value != nil {
-		if span, ok := value.(trace.Span); ok {
-			return ctx, span
-		}
-	}
 	return globalTracer.Start(ctx, operationName)
 }
 
 func StartSpanAndLogFromContext(ctx context.Context, operationName string) (context.Context, trace.Span, *zap.Logger) {
-	if value := ctx.Value(JaegerTrace); value != nil {
-		if span, ok := value.(trace.Span); ok {
-			return ctx, span, log.Logger()
-		}
-	}
 	ctx, span := globalTracer.Start(ctx, operationName)
 	return ctx, span, log.Logger()
 }
